@@ -1,0 +1,426 @@
+FACTS:
+
+Use This To Do :
+
+https://github.com/odriverobotics/ODrive/blob/master/docs/hoverboard.md
+
+Change following Steps:
+
+PROGRAMM:
+
+####PART 1####
+
+
+odrv0.axis0.motor.config.pole_pairs = 20  
+
+odrv0.axis1.motor.config.pole_pairs = 20  
+
+
+odrv0.axis0.motor.config.resistance_calib_max_voltage = 4
+odrv0.axis0.motor.config.requested_current_range = 25    #Requires config save and reboot
+odrv0.axis0.motor.config.current_control_bandwidth = 100  
+
+odrv0.axis1.motor.config.resistance_calib_max_voltage = 4
+odrv0.axis1.motor.config.requested_current_range = 25    #Requires config save and reboot
+odrv0.axis1.motor.config.current_control_bandwidth = 100  
+
+
+
+
+
+////  odrv0.axis0.motor.config.torque_constant = 8.27 / <measured KV>   /// funktioniert ohne
+
+odrv0.axis0.motor.config.calibration_current = 5
+
+odrv0.axis1.motor.config.calibration_current = 5
+
+	 odrv0.config.enable_brake_resistor = True
+	 odrv0.config.brake_resistance = 2
+	 
+	 odrv0.config.dc_max_negative_current = -5
+
+Resistor = 2 Ohm
+Brakeresistor = True
+
+
+Check Rest of Information
+#### PART 2 ###
+
+odrv0.axis0.encoder.config.mode = ENCODER_MODE_HALL
+odrv0.axis0.encoder.config.cpr = 120
+///odrv0.axis0.encoder.config.cpr = 120  // 20 Polepairs *6 = 120
+odrv0.axis0.encoder.config.calib_scan_distance = 150  
+
+odrv0.axis1.encoder.config.mode = ENCODER_MODE_HALL
+odrv0.axis1.encoder.config.cpr = 120
+///odrv0.axis1.encoder.config.cpr = 120  // 20 Polepairs *6 = 120
+odrv0.axis1.encoder.config.calib_scan_distance = 150  
+
+
+First Decoder
+odrv0.config.gpio9_mode = GPIO_MODE_DIGITAL
+odrv0.config.gpio10_mode = GPIO_MODE_DIGITAL
+odrv0.config.gpio11_mode = GPIO_MODE_DIGITAL
+
+Second Decoder
+odrv0.config.gpio12_mode = GPIO_MODE_DIGITAL
+odrv0.config.gpio13_mode = GPIO_MODE_DIGITAL
+odrv0.config.gpio14_mode = GPIO_MODE_DIGITAL
+
+### Part 3 ###
+
+odrv0.axis0.encoder.config.bandwidth = 200
+odrv0.axis0.controller.config.pos_gain = 1.0
+odrv0.axis0.controller.config.vel_gain = 0.05000000074505806    
+odrv0.axis0.controller.config.vel_integrator_gain = 1
+odrv0.axis0.controller.config.vel_limit = 1000
+odrv0.axis0.controller.config.control_mode = CONTROL_MODE_VELOCITY_CONTROL
+
+###  odrv0.axis0.requested_state = AXIS_STATE_MOTOR_CALIBRATION
+
+odrv0.axis1.encoder.config.bandwidth = 200
+odrv0.axis1.controller.config.pos_gain = 1.0
+odrv0.axis1.controller.config.vel_gain = 0.05000000074505806    
+odrv0.axis1.controller.config.vel_integrator_gain = 1
+odrv0.axis1.controller.config.vel_limit = 1000
+odrv0.axis1.controller.config.control_mode = CONTROL_MODE_VELOCITY_CONTROL
+
+///odrv0.axis1.controller.config.direction = 0   /// Drehrichtung bringt nichts
+
+
+###  odrv0.axis1.requested_state = AXIS_STATE_MOTOR_CALIBRATION
+
+###  odrv0.axis1.motor.config.pre_calibrated = True
+
+### odrv0.axis1.requested_state = AXIS_STATE_ENCODER_HALL_POLARITY_CALIBRATION
+
+###  odrv0.axis1.requested_state = AXIS_STATE_ENCODER_OFFSET_CALIBRATION
+
+### odrv0.axis1.encoder.config.pre_calibrated = True
+
+
+TEST
+odrv0.axis0.requested_state = AXIS_STATE_CLOSED_LOOP_CONTROL
+odrv0.axis1.requested_state = AXIS_STATE_CLOSED_LOOP_CONTROL
+
+odrv0.axis0.controller.input_vel = 1.5
+odrv0.axis1.controller.input_vel = 1.5
+
+odrv0.axis0.requested_state = AXIS_STATE_IDLE
+odrv0.axis1.requested_state = AXIS_STATE_IDLE
+
+#################################################
+
+Safety:
+
+odrv0.axis0.config.enable_watchdog = False
+odrv0.axis1.config.enable_watchdog = False
+
+#############################################################################
+PWM Controller Input  GPIO 3
+
+odrv0.config.gpio3_mode = GPIO_MODE_PWM
+odrv0.config.gpio3_pwm_mapping.min = -2.0
+odrv0.config.gpio3_pwm_mapping.max = 2.0
+odrv0.config.gpio3_pwm_mapping.endpoint = odrv0.axis0.controller._input_vel_property
+
+odrv0.axis0.controller.input_vel
+
+PWM Controller Input  GPIO 4
+
+odrv0.config.gpio4_mode = GPIO_MODE_PWM
+odrv0.config.gpio4_pwm_mapping.min = -2.0
+odrv0.config.gpio4_pwm_mapping.max = 2.0
+odrv0.config.gpio4_pwm_mapping.endpoint = odrv0.axis1.controller._input_vel_property
+
+odrv0.axis1.controller.input_vel
+
+
+Print:
+start_liveplotter(lambda: [odrv0.axis0.controller.input_vel])
+
+
+STARTUP:
+
+odrv0.axis0.config.startup_closed_loop_control = True   //Startet automatisch
+odrv0.axis1.config.startup_closed_loop_control = True   //Startet automatisch
+
+#############################################################################
+#############################################################################
+### Speichern
+odrv0.save_configuration()
+odrv0.reboot()
+
+### Löschen
+odrv0.erase_configuration()
+
+dump_errors(odrv0)
+#############################################################################
+
+
+odrv0.config.gpio3_mode = GPIO_MODE_PWM
+odrv0.config.gpio3_pwm_mapping.min = -2
+odrv0.config.gpio3_pwm_mapping.max = 2
+odrv0.config.gpio3_pwm_mapping.endpoint = odrv0.axis0.controller._input_pos_property
+
+
+
+
+36 Magnets / 2 = 18 ??
+
+Teilebezeichnung phub-29a
+
+Brakes:electronic brake
+Tires:free inflatable tires
+Weight (tyre):1.4KG
+With tire diameter:105mm
+Rated voltage:24/36v
+Rated power:50w-250w
+No-load speed:350-1600RPM
+No-load current:0.3 1.3A 
+
+gradeability:>5degree
+
+open size:60mm
+
+loading weight:8kg
+
+max speed:25km/h
+
+
+
+KV default is 16
+
+### Calibration:
+
+odrv0.axis0.motor.config.motor_type = MOTOR_TYPE_HIGH_CURRENT
+odrv0.axis0.encoder.config.calib_range = 0.05
+odrv0.axis0.motor.config.calibration_current = 10.0
+odrv0.axis0.motor.config.resistance_calib_max_voltage = 12.0 
+odrv0.axis0.controller.config.vel_limit = 5
+
+odrv0.axis0.controller.config.control_mode = CONTROL_MODE_VELOCITY_CONTROL
+
+odrv0.axis0.controller.config.vel_ramp_rate = 0.5
+
+odrv0.axis0.controller.input_vel = 1
+
+
+Try:
+
+
+odrv0.axis0.requested_state = AXIS_STATE_CLOSED_LOOP_CONTROL
+odrv0.axis0.controller.input_vel = 1.5
+odrv0.axis0.requested_state = AXIS_STATE_IDLE
+
+
+
+
+------------
+
+odrv0.axis0.requested_state = AXIS_STATE_FULL_CALIBRATION_SEQUENCE
+
+odrv0.axis0.requested_state = AXIS_STATE_CLOSED_LOOP_CONTROL
+
+odrv0.axis0.controller.input_pos = 1
+
+
+1. odrv0.axis0.requested_state = AXIS_STATE_MOTOR_CALIBRATION  (beep)
+2. odrv0.axis0.motor  (no errors)
+
+3. odrv0.axis0.motor.config.pre_calibrated = True
+
+4. odrv0.axis0.requested_state = AXIS_STATE_ENCODER_HALL_POLARITY_CALIBRATION
+
+5. odrv0.axis0.encoder   (keine Error)
+6. odrv0.axis0.requested_state = AXIS_STATE_ENCODER_OFFSET_CALIBRATION
+
+7. odrv0.axis0.encoder.config.pre_calibrated = True
+
+
+    odrv0.axis0.config.startup_motor_calibration
+    odrv0.axis0.config.startup_encoder_index_search
+    odrv0.axis0.config.startup_encoder_offset_calibration
+    
+    
+    odrv0.axis0.config.startup_closed_loop_control
+    odrv0.axis1.config.startup_closed_loop_control
+
+
+odrv0.axis0.requested_state = AXIS_STATE_ENCODER_INDEX_SEARCH
+
+
+### Speichern
+odrv0.save_configuration()
+odrv0.reboot()
+
+### Löschen
+odrv0.erase_configuration()
+
+dump_errors(odrv0)
+
+
+
+CONTROLLER-SETUP:
+
+odrv0.axis0.controller.pos_setpoint = 0.0
+odrv0.axis0.controller.vel_setpoint = 30.0
+odrv0.axis0.controller.vel_integrator_current = 0.7711848616600037 
+odrv0.axis0.controller.current_setpoint = 0.0
+
+??
+
+odrv0.axis0.controller.config.input_mode = INPUT_MODE_POS_FILTER
+
+odrv0.axis0.controller.input_pos = 1
+
+
+odrv0.axis0.controller.config.control_mode = 2
+odrv0.axis0.controller.config.pos_gain = 1.0 
+odrv0.axis0.controller.config.vel_gain = 0.05000000074505806 
+odrv0.axis0.controller.config.vel_integrator_gain = 1.0
+odrv0.axis0.controller.config.vel_limit = 1000.0
+
+
+
+
+MOTOR-SETUP NEU:
+
+odrv0.axis0.motor.config.pole_pairs = 20
+odrv0.axis0.motor.config.phase_inductance = 0.00021729597938247025
+odrv0.axis0.motor.config.phase_resistance = 0.20425942540168762
+odrv0.axis0.motor.config.current_lim = 20.0
+odrv0.axis0.motor.config.requested_current_range = 30.0
+odrv0.axis0.motor.config.current_control_bandwidth = 50.0
+
+
+
+ENCODER-SETUP:
+
+odrv0.axis0.encoder.config.shadow_count = 1693  ??
+odrv0.axis0.encoder.config.count_in_cpr = 13    ??
+odrv0.axis0.encoder.config.offset = 142         ??
+odrv0.axis0.encoder.config.interpolation = 0.11777421087026596 ??
+odrv0.axis0.encoder.config.phase = -2.2950730323791504
+odrv0.axis0.encoder.config.pos_estimate = 1694.420654296875
+odrv0.axis0.encoder.config.pos_cpr = 14.539641380310059
+
+odrv0.axis0.encoder.config.hall_state = 2 
+odrv0.axis0.encoder.config.pll_vel = 72.79999542236328 
+
+odrv0.axis0.encoder.config.mode = 1     OK   ///Setzt deb Hallstatus auf 6
+
+odrv0.axis0.encoder.config.use_index = False
+odrv0.axis0.encoder.config.pre_calibrated = True
+odrv0.axis0.encoder.config.idx_search_speed = 10.0
+
+odrv0.axis0.encoder.config.cpr = 120  OK
+
+odrv0.axis0.encoder.config.offset = 142
+odrv0.axis0.encoder.config.offset_float = 0.5390880703926086
+odrv0.axis0.encoder.config.bandwidth = 200.0
+odrv0.axis0.encoder.config.calib_range = 0.019999999552965164
+
+------------------------------
+
+
+
+
+#Debug
+
+odrv0.axis0.current_state
+odrv0.axis0.requested_state
+
+dump_errors(odrv0)
+
+
+## Fahrbefehle:
+odrv0.axis0.controller.input_vel = 2
+
+odrv0.axis0.controller.input_vel = 0
+
+odrv0.axis0.requested_state = AXIS_STATE_IDLE
+
+
+Control Commands
+
+    odrv0.axis0.controller.input_pos = <turn>
+    odrv0.axis0.controller.input_vel = <turn/s>
+    odrv0.axis0.controller.input_torque = <torque in Nm>
+
+odrv0.axis0.
+
+
+#### Grafik_>
+
+start_liveplotter(lambda: [odrv0.axis0.controller.input_vel])
+
+##################################################
+Neue Config
+### Speichern
+odrv0.save_configuration()
+odrv0.reboot()
+dump_errors(odrv0)
+
+
+odrv0.axis0.motor.config.calibration_current = 10
+
+	 odrv0.config.enable_brake_resistor = True
+	 odrv0.config.brake_resistance = 2
+	 
+	 odrv0.config.dc_max_negative_current = -10
+	 
+	 odrv0.axis0.motor.config.pole_pairs = 20  ??
+	 odrv0.axis0.motor.config.torque_constant = 1
+ 	odrv0.axis0.motor.config.motor_type = MOTOR_TYPE_HIGH_CURRENT
+ 	odrv0.axis0.encoder.config.cpr = 120
+ 	
+ 	
+ 	
+ 	odrv0.save_configuration() 
+ 	
+ 	
+ 	
+ OLD Config in Blog:
+ 
+MOTOR:
+ 	
+pre_calibrated = True (bool)
+pole_pairs = 20 (int)
+calibration_current = 10.0 (float)
+resistance_calib_max_voltage = 4.0 (float)
+phase_inductance = 0.00021778082009404898 (float)
+phase_resistance = 0.20834951102733612 (float)
+direction = 1 (int)
+motor_type = 0 (int)
+current_lim = 10.0 (float)
+requested_current_range = 15.0 (float)
+current_control_bandwidth = 100.0 (float)
+
+odrv0.axis1.encoder.config ENCODER
+ode = 1 (int)
+use_index = False (bool)
+pre_calibrated = True (bool)
+idx_search_speed = 10.0 (float)
+cpr = 120 (int)
+offset = 142 (int)
+offset_float = 0.5745813846588135 (float)
+bandwidth = 50.0 (float)
+calib_range = 0.019999999552965164 (float)
+
+odrv0.axis1.controller.config
+control_mode = 2 (int)
+pos_gain = 1.0 (float)
+vel_gain = 0.019999999552965164 (float)
+vel_integrator_gain = 0.20000000298023224 (float)
+vel_limit = 1000.0 (float)
+
+
+
+
+ 	
+    To save the configuration to a file on the PC, run odrivetool backup-config my_config.json.
+    To restore the configuration form such a file, run odrivetool restore-config my_config.json.
+
+ 	
+ 	
