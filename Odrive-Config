@@ -4,6 +4,12 @@ Use This To Do :
 
 https://github.com/odriverobotics/ODrive/blob/master/docs/hoverboard.md
 
+
+###WIRING !!!
+Please do the Wiring to the infos in the article.
+But for drirection LEFT and RIGHT please chage the Encoder A / B Signal for ONE Motor to B / A
+then you have two Motors in the right direction
+
 Change following Steps:
 
 PROGRAMM:
