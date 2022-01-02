@@ -1,0 +1,1 @@
+Try setting vel_integrator_gain to 0 and increase vel_gain instead.
