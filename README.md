@@ -4,7 +4,7 @@ My Version of R2 Droid Drive-Controller
 I use this Board:
 [Odrive-V36](https://eu.odriverobotics.com/shop/odrive-v36)
 
-The Basic Concept uses two mixed PWM Channels to Control the Droid. 
+The Basic Concept uses two mixed PWM Channels on PIN 3 and PIN 4 to Control the Droid. 
 
 ## The Failsafe sould be engaged in your RC Reciever!!!
 ## PWM ODrive can't do Failsave it self!!!
