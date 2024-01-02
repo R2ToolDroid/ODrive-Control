@@ -1,0 +1,49 @@
+https://docs.odriverobotics.com/v/0.5.4/hoverboard.html
+
+
+
+  To save the configuration to a file on the PC, run odrivetool backup-config my_config.json.
+    To restore the configuration form such a file, run odrivetool restore-config my_config.json.
+
+odrivetool restore-config my_config22.json
+
+
+
+start odrivetool 
+
+### Speichern
+odrv0.save_configuration()
+odrv0.reboot()
+
+### Löschen
+odrv0.erase_configuration()
+
+dump_errors(odrv0)
+
+odrv0.clear_errors()
+
+
+Vor dem erneuten speichern erst mal aus dem Controllmode raus
+
+odrv0.axis0.requested_state = AXIS_STATE_IDLE
+odrv0.axis1.requested_state = AXIS_STATE_IDLE
+
+
+Tuning
+
+Geschwindigkeit :
+odrv0.config.gpio4_pwm_mapping.min = -3.0     //   PWM Bereich für Fahrbefehl
+odrv0.config.gpio4_pwm_mapping.max = 3.0     
+
+odrv0.config.gpio3_pwm_mapping.min = -3.0     //   PWM Bereich für Fahrbefehl
+odrv0.config.gpio3_pwm_mapping.max = 3.0    
+
+
+Stärke :
+
+odrv0.axis0.motor.config.current_lim = 20    /// AMPS
+odrv0.axis1.motor.config.current_lim = 20    /// AMPS
+
+
+
+
